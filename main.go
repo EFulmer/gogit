@@ -21,19 +21,21 @@ func main() {
 
 // HashObject hashes the file located at filename, replicating the functionality of `git hash-object`.
 func HashObject(filename string) string {
-    file, err := os.Open(filename)
+    fileContents, err := os.ReadFile(filename)
     if err != nil {
         log.Fatal(err)
     }
-    defer file.Close()
+
+    header := "blob " + fmt.Sprintf("%d", len(fileContents))
+    header = header + "\u0000"
+
+    fmt.Println(header)
+
+    store := header + fmt.Sprintf("%s", fileContents)
+
+    fmt.Println(store)
 
     hasher := sha1.New()
-
-    if _, err := io.Copy(hasher, file); err != nil {
-        log.Fatal(err)
-    }
-
-    hash := fmt.Sprintf("%x", hasher.Sum(nil))
-
-    return hash
+    io.WriteString(hasher, store)
+    return fmt.Sprintf("%x", hasher.Sum(nil))
 }
