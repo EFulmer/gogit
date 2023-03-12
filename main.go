@@ -29,11 +29,7 @@ func HashObject(filename string) string {
     header := "blob " + fmt.Sprintf("%d", len(fileContents))
     header = header + "\u0000"
 
-    fmt.Println(header)
-
     store := header + fmt.Sprintf("%s", fileContents)
-
-    fmt.Println(store)
 
     hasher := sha1.New()
     io.WriteString(hasher, store)
